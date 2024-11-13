@@ -12,3 +12,10 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Song{
+  id Int @id @default(autoincrement())
+  cim String
+  hossz Int 
+  ar Int
+}
