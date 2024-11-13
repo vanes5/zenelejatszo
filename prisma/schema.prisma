@@ -16,6 +16,8 @@ datasource db {
 model Song{
   id Int @id @default(autoincrement())
   cim String
+  szerzo String
   hossz Int 
   ar Int
+  ertekel Int 
 }

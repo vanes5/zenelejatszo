@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode } from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
@@ -6,6 +6,24 @@ import { UpdateSongDto } from './dto/update-song.dto';
 @Controller('songs')
 export class SongsController {
   constructor(private readonly songsService: SongsService) {}
+
+  @Get('/free')
+  async getFree(){
+    const songs = await this.songsService.getFree();
+    if(songs.length == 0) throw new NotFoundException('There are no free songs avaible');
+    return songs
+  }
+
+  @Get('/top')
+  async getTop(){
+    return await this.songsService.getTop();
+  }
+
+  @Get('/top/:id')
+  async getTopId(@Param('id') id: string){
+    return await this.songsService.getTop(+id);
+  }
+
 
   @Post()
   create(@Body() createSongDto: CreateSongDto) {
@@ -18,17 +36,27 @@ export class SongsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.songsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const song =  await this.songsService.findOne(+id);
+    if (!song) throw new NotFoundException('No song with this id ' + id)
+      return song;
   }
 
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSongDto: UpdateSongDto) {
-    return this.songsService.update(+id, updateSongDto);
+  async update(@Param('id') id: string, @Body() updateSongDto: UpdateSongDto) {
+    const song = await this.songsService.update(+id, updateSongDto);
+    if (!song){
+      throw new NotFoundException('No song with this id'+ id);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.songsService.remove(+id);
+  @HttpCode(204)
+  async remove(@Param('id') id: string) {
+    const song = await this.songsService.remove(+id);
+    if(!song){
+      throw new NotFoundException('No song with this id'+ id);
+    }
   }
 }

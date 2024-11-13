@@ -9,7 +9,7 @@ export class AppController {
   @Render('index')
   getHello() {
     return {
-      message: this.appService.getHello()
+      
     };
   }
 }
