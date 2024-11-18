@@ -74,4 +74,23 @@ export class SongsService {
       return newArray.slice(0,id);
     }
   }
+
+  async getArtists(){
+    try{
+      return (await this.db.song.groupBy({
+        by: ['szerzo'],
+        _count: {
+          szerzo: true
+        },
+        orderBy: {
+          _count : {
+            szerzo: 'desc',
+          }
+        }
+      })).map(e => ({ szerzo: e.szerzo, db: e._count.szerzo }))
+
+    } catch{
+      return undefined;
+    }
+  }
 }

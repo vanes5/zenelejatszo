@@ -20,4 +20,11 @@ model Song{
   hossz Int 
   ar Int
   ertekel Int 
+  playlists  Playlist[]  @relation("PlaylistSongs")
+}
+
+model Playlist {
+  id    Int      @id @default(autoincrement())
+  nev   String   
+  songs Song[]   @relation("PlaylistSongs") 
 }

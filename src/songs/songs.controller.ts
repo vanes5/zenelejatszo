@@ -14,6 +14,13 @@ export class SongsController {
     return songs
   }
 
+  @Get('/popularArtists')
+  async getArtists(){
+    const artists = await this.songsService.getArtists();
+    if(artists.length == 0) throw new NotFoundException('There are no songs in the database');
+    return artists
+  }
+
   @Get('/top')
   async getTop(){
     return await this.songsService.getTop();
