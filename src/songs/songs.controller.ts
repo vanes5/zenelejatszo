@@ -2,35 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, H
 import { SongsService } from './songs.service';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
+import { count } from 'console';
 
 @Controller('songs')
 export class SongsController {
   constructor(private readonly songsService: SongsService) {}
-
-  @Get('/free')
-  async getFree(){
-    const songs = await this.songsService.getFree();
-    if(songs.length == 0) throw new NotFoundException('There are no free songs avaible');
-    return songs
-  }
-
-  @Get('/popularArtists')
-  async getArtists(){
-    const artists = await this.songsService.getArtists();
-    if(artists.length == 0) throw new NotFoundException('There are no songs in the database');
-    return artists
-  }
-
-  @Get('/top')
-  async getTop(){
-    return await this.songsService.getTop();
-  }
-
-  @Get('/top/:id')
-  async getTopId(@Param('id') id: string){
-    return await this.songsService.getTop(+id);
-  }
-
 
   @Post()
   create(@Body() createSongDto: CreateSongDto) {
@@ -42,7 +18,7 @@ export class SongsController {
     return this.songsService.findAll();
   }
 
-  @Get(':id')
+  @Get(':id(\\d+)')
   async findOne(@Param('id') id: string) {
     const song =  await this.songsService.findOne(+id);
     if (!song) throw new NotFoundException('No song with this id ' + id)
@@ -65,5 +41,28 @@ export class SongsController {
     if(!song){
       throw new NotFoundException('No song with this id'+ id);
     }
+  }
+  @Get('/free')
+  async getFree(){
+    const songs = await this.songsService.getFree();
+    if(songs.length == 0) throw new NotFoundException('There are no free songs avaible');
+    return songs
+  }
+
+  @Get('/popularArtists')
+  async getArtists(){
+    const artists = await this.songsService.getArtists();
+    if(artists.length == 0) throw new NotFoundException('There are no songs in the database');
+    return artists
+  }
+
+  @Get('/top')
+  async getTop(){
+    return await this.songsService.getTop();
+  }
+
+  @Get('/top/:count')
+  async getTopId(@Param('count') count: string){
+    return await this.songsService.getTop(+count);
   }
 }

@@ -19,7 +19,7 @@ model Song{
   szerzo String
   hossz Int 
   ar Int
-  ertekel Int 
+  ertekel Float 
   playlists  Playlist[]  @relation("PlaylistSongs")
 }
 

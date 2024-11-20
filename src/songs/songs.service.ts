@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
 import { PrismaService } from 'src/prisma.service';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class SongsService {
@@ -64,14 +65,22 @@ export class SongsService {
     }
   }
 
-  async getTop(id?: number){
-    let newArray = [...(await this.db.song.findMany())];
-    newArray = newArray.sort((a, b) => a.ertekel - b.ertekel).reverse();
-    if(!id){
-      return newArray.slice(0,10);
+  async getTop(count?: number){
+    if(count){
+      return this.db.song.findMany({
+        orderBy: {
+          ertekel: 'desc'
+        },
+        take: count
+      })
     }
-    else {
-      return newArray.slice(0,id);
+    else{
+      return this.db.song.findMany({
+        orderBy: {
+          ertekel: 'desc'
+        },
+        take: 10
+      })
     }
   }
 
